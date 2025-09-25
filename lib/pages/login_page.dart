@@ -165,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
-                          const Text("Remember Me"),
+                          const Text("Remember"),
                         ],
                       ),
                     ),
