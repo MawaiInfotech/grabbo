@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grabbo/pages/home_page.dart';
+import 'package:grabbo/pages/main_page.dart';
 import 'package:grabbo/pages/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -180,7 +182,14 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(40),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MainPage(),
+                          ),
+                        );
+                      },
                       child: Center(
                         child: const Text(
                           "LOGIN",
