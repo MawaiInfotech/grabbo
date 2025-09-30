@@ -9,55 +9,58 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-  class _HomePageState extends State<HomePage>{
-    String _currentAddress = "Select Address"; // default address
+class _HomePageState extends State<HomePage> {
+  String _currentAddress = "Select Address"; // default address
 
-    void updateAddress(String newAddress) {
-      setState(() {
-        _currentAddress = newAddress;
-      });
-    }
+  void updateAddress(String newAddress) {
+    setState(() {
+      _currentAddress = newAddress;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.yellow.shade100,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: CustomScrollView(
+          slivers: [
+            // 🔹 Header
+            SliverToBoxAdapter(
+              child: Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
-                    const Icon(Icons.flash_on, color: Colors.black, size: 28),
+                    const Icon(Icons.flash_on,
+                        color: Colors.black, size: 28),
                     const SizedBox(width: 8),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text("Grabbo",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
                         GestureDetector(
                           onTap: () {
-                            // Show dialog
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
                               backgroundColor: Colors.white,
                               shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.vertical(top: Radius.circular(20)),
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20)),
                               ),
-                              builder: (context) => SelectLocationDialog(
-                                onLocationSelected: updateAddress,
-                              ),
+                              builder: (context) =>
+                                  SelectLocationDialog(
+                                    onLocationSelected: updateAddress,
+                                  ),
                             );
                           },
                           child: Text(
                             _currentAddress,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
                               color: Colors.blue,
                               decoration: TextDecoration.underline,
@@ -74,126 +77,169 @@ class HomePage extends StatefulWidget {
                   ],
                 ),
               ),
+            ),
 
-              // Search Bar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search "20000 mah powerbank"...',
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: const Icon(Icons.mic),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+            // 🔹 Search bar (sticky)
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _StickyHeaderDelegate(
+                height: 60, // 🔹 Search bar needs more than 70
+                child: Container(
+                  color: Colors.yellow.shade100,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 8),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search "20000 mah powerbank"...',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: const Icon(Icons.mic),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ),
               ),
+            ),
 
-              // Category Row
-              SizedBox(
-                height: 70,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: const [
-                    _categoryIcon(Icons.apps, "All"),
-                    _categoryIcon(Icons.local_pharmacy, "Pharmacy"),
-                    _categoryIcon(Icons.devices, "Electronics"),
-                    _categoryIcon(Icons.eco, "Fresh"),
-                    _categoryIcon(Icons.checkroom, "Fashion"),
-                    _categoryIcon(Icons.new_releases, "New"),
-                  ],
+            // 🔹 Category Row (sticky)
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _StickyHeaderDelegate(
+                height: 70, // ✅ category row fixed height
+                child: Container(
+                  color: Colors.yellow.shade100,
+                  height: 70,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: const [
+                      _categoryIcon(Icons.apps, "All"),
+                      _categoryIcon(Icons.local_pharmacy, "Pharmacy"),
+                      _categoryIcon(Icons.devices, "Electronics"),
+                      _categoryIcon(Icons.eco, "Fresh"),
+                      _categoryIcon(Icons.checkroom, "Fashion"),
+                      _categoryIcon(Icons.new_releases, "New"),
+                    ],
+                  ),
                 ),
               ),
+            ),
 
-              // Banner
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    height: 150,
-                    color: Colors.green.shade700,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset("assets/images/banner.png",
-                              fit: BoxFit.cover),
+            // 🔹 Main content
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Banner
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        height: 150,
+                        color: Colors.green.shade700,
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: Image.asset(
+                                "assets/images/banner.png",
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Positioned(
+                              right: 16,
+                              bottom: 16,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.yellow),
+                                onPressed: () {},
+                                child: const Text("Shop now",
+                                    style:
+                                    TextStyle(color: Colors.black)),
+                              ),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                          right: 16,
-                          bottom: 16,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.yellow),
-                            onPressed: () {},
-                            child: const Text("Shop now",
-                                style: TextStyle(color: Colors.black)),
-                          ),
-                        ),
+                      ),
+                    ),
+                  ),
+
+                  // Top Categories
+                  const Padding(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text("Top Categories",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 16),
+                      children: const [
+                        _circleCategory("T-Shirt",
+                            "assets/images/tshirt.png"),
+                        _circleCategory("Shirt",
+                            "assets/images/shirt.png"),
+                        _circleCategory("Sports",
+                            "assets/images/shoes.png"),
+                        _circleCategory("Trackpants",
+                            "assets/images/pants.png"),
+                        _circleCategory("New Trend",
+                            "assets/images/watch.png"),
                       ],
                     ),
                   ),
-                ),
-              ),
 
-              // Top Categories
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text("Top Categories",
-                    style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  // Bestseller
+                  const Padding(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text("Bestseller",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      shrinkWrap: true,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      physics: const NeverScrollableScrollPhysics(),
+                      childAspectRatio: 1,
+                      children: [
+                        _bestsellerCard(
+                            "Vegetables & Fruits", "+172 more"),
+                        _bestsellerCard(
+                            "Dairy, Bread & Eggs", "+33 more"),
+                        _bestsellerCard(
+                            "Oil, Ghee & Masala", "+226 more"),
+                        _bestsellerCard(
+                            "Snacks & Biscuits", "+120 more"),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(
-                height: 100,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: const [
-                    _circleCategory("T-Shirt", "assets/images/tshirt.png"),
-                    _circleCategory("Shirt", "assets/images/shirt.png"),
-                    _circleCategory("Sports", "assets/images/shoes.png"),
-                    _circleCategory("Trackpants", "assets/images/pants.png"),
-                    _circleCategory("New Trend", "assets/images/watch.png"),
-                  ],
-                ),
-              ),
-
-              // Bestseller
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text("Bestseller",
-                    style:
-                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  physics: const NeverScrollableScrollPhysics(),
-                  childAspectRatio: 1,
-                  children: [
-                    _bestsellerCard("Vegetables & Fruits", "+172 more"),
-                    _bestsellerCard("Dairy, Bread & Eggs", "+33 more"),
-                    _bestsellerCard("Oil, Ghee & Masala", "+226 more"),
-                    _bestsellerCard("Snacks & Biscuits", "+120 more"),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+
+// ---------------------------- Location Dialog ----------------------------
 
 class SelectLocationDialog extends StatelessWidget {
   final Function(String) onLocationSelected;
@@ -219,11 +265,9 @@ class SelectLocationDialog extends StatelessWidget {
                       icon: const Icon(Icons.arrow_back),
                       onPressed: () => Navigator.pop(context),
                     ),
-                    const Text(
-                      "Select Location",
-                      style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                    const Text("Select Location",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -243,29 +287,29 @@ class SelectLocationDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Options
+                // Use my location
                 ListTile(
-                  leading: const Icon(Icons.my_location, color: Colors.pink),
+                  leading:
+                  const Icon(Icons.my_location, color: Colors.pink),
                   title: const Text("Use my Current Location"),
                   onTap: () async {
                     try {
                       final position = await _getCurrentLocation();
-
-                      // Reverse Geocoding
                       final placemarks = await placemarkFromCoordinates(
                         position.latitude,
                         position.longitude,
                       );
 
-                      String address = "Lat: ${position.latitude}, Lng: ${position.longitude}";
+                      String address =
+                          "Lat: ${position.latitude}, Lng: ${position.longitude}";
                       if (placemarks.isNotEmpty) {
                         final place = placemarks.first;
                         address =
                         "${place.street}, ${place.locality}, ${place.administrativeArea}";
                       }
 
-                      onLocationSelected(address); // ✅ update in HomePage
-                      Navigator.pop(context); // close dialog
+                      onLocationSelected(address);
+                      Navigator.pop(context);
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Error: $e")),
@@ -273,6 +317,7 @@ class SelectLocationDialog extends StatelessWidget {
                     }
                   },
                 ),
+
                 ListTile(
                   leading: const Icon(Icons.add, color: Colors.pink),
                   title: const Text("Add New Address"),
@@ -282,11 +327,11 @@ class SelectLocationDialog extends StatelessWidget {
 
                 const SizedBox(height: 20),
                 const Text("Saved Addresses",
-                    style:
-                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 12),
 
-                // Saved Addresses
+                // Saved Address Card
                 Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
@@ -294,7 +339,7 @@ class SelectLocationDialog extends StatelessWidget {
                     leading: const Icon(Icons.apartment),
                     title: const Text("Work • 7 m"),
                     subtitle: const Text(
-                        "A-164, mawai Infotech Ltd, Sector 63, A Block, Block A, Noida"),
+                        "A-164, Mawai Infotech Ltd, Sector 63, A Block, Noida"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: const [
@@ -311,25 +356,6 @@ class SelectLocationDialog extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: ListTile(
-                    leading: const Icon(Icons.home),
-                    title: const Text("Home • 4.2 km"),
-                    subtitle: const Text(
-                        "ug 2, 1531, Sector 5, Vasundhara, Ghaziabad, 1531, Sector 5, Vasundhara"),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.share),
-                        SizedBox(width: 8),
-                        Icon(Icons.more_vert),
-                      ],
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -339,36 +365,33 @@ class SelectLocationDialog extends StatelessWidget {
   }
 }
 
+// ---------------------------- Utils ----------------------------
+
 Future<Position> _getCurrentLocation() async {
   bool serviceEnabled;
   LocationPermission permission;
 
-  // Test if location services are enabled.
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    throw Exception('Location services are disabled.');
-  }
+  if (!serviceEnabled) throw Exception('Location services disabled');
 
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      throw Exception('Location permissions are denied');
+      throw Exception('Location permissions denied');
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
-    throw Exception(
-        'Location permissions are permanently denied, we cannot request permissions.');
+    throw Exception('Location permissions permanently denied');
   }
 
-  // Get current position
   return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high);
 }
 
+// ---------------------------- Widgets ----------------------------
 
-// Category icon widget
 class _categoryIcon extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -393,7 +416,6 @@ class _categoryIcon extends StatelessWidget {
   }
 }
 
-// Circle category (Top Categories)
 class _circleCategory extends StatelessWidget {
   final String title, image;
   const _circleCategory(this.title, this.image);
@@ -404,10 +426,7 @@ class _circleCategory extends StatelessWidget {
       margin: const EdgeInsets.only(right: 16),
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: AssetImage(image),
-          ),
+          CircleAvatar(radius: 30, backgroundImage: AssetImage(image)),
           const SizedBox(height: 6),
           Text(title, style: const TextStyle(fontSize: 12)),
         ],
@@ -416,7 +435,6 @@ class _circleCategory extends StatelessWidget {
   }
 }
 
-// Bestseller card
 Widget _bestsellerCard(String title, String more) {
   return Container(
     decoration: BoxDecoration(
@@ -435,20 +453,43 @@ Widget _bestsellerCard(String title, String more) {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: List.generate(
-                4,
-                    (index) => Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                )),
+              4,
+                  (index) => Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 6),
         Text(more, style: const TextStyle(color: Colors.grey, fontSize: 12)),
         Text(title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+            style:
+            const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
       ],
     ),
   );
 }
+
+// Sticky Header Delegate
+class _StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double height; // 👈 add height
+  _StickyHeaderDelegate({required this.child, required this.height});
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) =>
+      child;
+
+  @override
+  double get maxExtent => height; // 👈 use dynamic height
+  @override
+  double get minExtent => height;
+
+  @override
+  bool shouldRebuild(_StickyHeaderDelegate oldDelegate) =>
+      oldDelegate.child != child || oldDelegate.height != height;
+}
+
