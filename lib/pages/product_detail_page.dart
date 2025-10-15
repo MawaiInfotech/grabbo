@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../routes/app_routes.dart';
+
 class ProductDetailsPage extends StatefulWidget {
   const ProductDetailsPage({super.key});
 
@@ -92,6 +94,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
               // 🔹 Similar Products
               _similarProducts(),
+
             ],
           ),
         ),
