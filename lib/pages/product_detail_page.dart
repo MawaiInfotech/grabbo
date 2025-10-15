@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../routes/app_routes.dart';
+
 class ProductDetailsPage extends StatefulWidget {
   const ProductDetailsPage({super.key});
 
@@ -8,7 +10,7 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  bool showInfo = false; // toggle Info visibility
+  bool showInfo = true; // toggle Info visibility
   bool showHighlight = false; // toggle Highlights visibility
 
   @override
@@ -92,6 +94,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
               // 🔹 Similar Products
               _similarProducts(),
+
             ],
           ),
         ),

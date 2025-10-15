@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grabbo/pages/category_page.dart';
 import 'package:grabbo/pages/home_page.dart';
+import 'package:grabbo/pages/my_account_page.dart';
 import 'package:grabbo/pages/my_cart_page.dart';
 
 class NavigationPage extends StatefulWidget {
@@ -17,7 +18,7 @@ class _NavigationPageState extends State<NavigationPage> {
    HomePage(),
     CategoriesPage(),
     MyCartPage(),
-    const Center(child: Text("👤 Account Page")),
+    AccountPage()
   ];
 
   void _onItemTapped(int index) {

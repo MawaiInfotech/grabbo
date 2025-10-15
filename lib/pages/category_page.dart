@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../routes/app_routes.dart';
+
 class CategoriesPage extends StatelessWidget {
   const CategoriesPage({super.key});
 
@@ -7,88 +9,139 @@ class CategoriesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.yellow.shade100,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // 🔹 App Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.flash_on, color: Colors.green, size: 28),
-                        SizedBox(width: 8),
-                        Text(
-                          "Grabbo",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [ Color(0xffffda73),  Colors.white, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              // 🔹 App Header
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children:  [
+                          Icon(Icons.flash_on, color: Colors.purple, size: 28),
+                          SizedBox(width: 8),
+                          Text(
+                            "Grabbo",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.purple,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const Icon(Icons.shopping_cart_outlined, color: Colors.black54),
-                  ],
+                        ],
+                      ),
+                    //  const Icon(Icons.shopping_cart_outlined, color: Colors.black54),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            // 🔹 Search Bar
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search "20000 mah powerbank"...',
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: const Icon(Icons.mic),
-                    filled: true,
-                    fillColor: Colors.white,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+              // 🔹 Search Bar
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search "20000 mah powerbank"...',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: const Icon(Icons.mic),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            // 🔹 Category Section 1
-            SliverToBoxAdapter(child: _categoryTitle("Grocery & Kitchen")),
-            _buildCategoryGrid([
-              _categoryItem("Vegetables & Fruits", "assets/images/veg.png"),
-              _categoryItem("Atta, Rice & Dal", "assets/images/atta.png"),
-              _categoryItem("Oil, Ghee & Masala", "assets/images/oil.png"),
-              _categoryItem("Dairy, Bread & Eggs", "assets/images/dairy.png"),
-            ]),
+              // 🔹 Category Section 1
+              SliverToBoxAdapter(child: _categoryTitle("Grocery & Kitchen")),
+              _buildCategoryGrid([
+                InkWell(
+                  onTap: (){
+                    Navigator.pushNamed(context, AppRoutes.subCategoryPage);
+                  },
+                    child: _categoryItem("Vegetables & Fruits", "assets/images/fortune.jpg")),
+                _categoryItem("Atta, Rice & Dal", "assets/images/oil.jpg"),
+                _categoryItem("Oil, Ghee & Masala", "assets/images/onion.jpg"),
+                _categoryItem("Dairy, Bread & Eggs", "assets/images/aata.webp"),
+                InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, AppRoutes.subCategoryPage);
+                    },
+                    child: _categoryItem("Vegetables & Fruits", "assets/images/fortune.jpg")),
+                _categoryItem("Atta, Rice & Dal", "assets/images/oil.jpg"),
+                _categoryItem("Oil, Ghee & Masala", "assets/images/onion.jpg"),
+                _categoryItem("Dairy, Bread & Eggs", "assets/images/aata.webp"),
+              ]),
 
-            // 🔹 Category Section 2
-            SliverToBoxAdapter(child: _categoryTitle("Snacks & Drinks")),
-            _buildCategoryGrid([
-              _categoryItem("Dry Fruits & More", "assets/images/dryfruits.png"),
-              _categoryItem("Biscuits & Cakes", "assets/images/biscuits.png"),
-              _categoryItem("Cold Drinks & Juices", "assets/images/drinks.png"),
-              _categoryItem("Tea, Coffee & Health Drinks", "assets/images/tea.png"),
-            ]),
+              // 🔹 Category Section 2
+              SliverToBoxAdapter(child: _categoryTitle("Snacks & Drinks")),
+              _buildCategoryGrid([
+                _categoryItem("Dry Fruits & More", "assets/images/chips.webp"),
+                _categoryItem("Biscuits & Cakes", "assets/images/biscut.webp"),
+                _categoryItem("Cold Drinks & Juices", "assets/images/protien.png"),
+                _categoryItem("Tea, Coffee & Health Drinks", "assets/images/amul.webp"),
+              ]),
 
-            // 🔹 Category Section 3
-            SliverToBoxAdapter(child: _categoryTitle("Home & Cleaning")),
-            _buildCategoryGrid([
-              _categoryItem("Bath & Body", "assets/images/bottle.png"),
-              _categoryItem("Home Essentials", "assets/images/milk.png"),
-              _categoryItem("Snacks & Chips", "assets/images/chips.png"),
-              _categoryItem("Sweets & Chocolates", "assets/images/sweets.png"),
-            ]),
+              // 🔹 Category Section 3
+              SliverToBoxAdapter(child: _categoryTitle("Home & Cleaning")),
+              _buildCategoryGrid([
+                _categoryItem("Bath & Body", "assets/images/ginger.png"),
+                _categoryItem("Home Essentials", "assets/images/milk.webp"),
+                _categoryItem("Snacks & Chips", "assets/images/chips.webp"),
+                _categoryItem("Sweets & Chocolates", "assets/images/banana.jpeg"),
+              ]),
 
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 30),
-            ),
-          ],
+              SliverToBoxAdapter(child: _categoryTitle("Grocery & Kitchen")),
+              _buildCategoryGrid([
+                InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, AppRoutes.subCategoryPage);
+                    },
+                    child: _categoryItem("Vegetables & Fruits", "assets/images/fortune.jpg")),
+                _categoryItem("Atta, Rice & Dal", "assets/images/oil.jpg"),
+                _categoryItem("Oil, Ghee & Masala", "assets/images/onion.jpg"),
+                _categoryItem("Dairy, Bread & Eggs", "assets/images/aata.webp"),
+              ]),
+
+              // 🔹 Category Section 2
+              SliverToBoxAdapter(child: _categoryTitle("Snacks & Drinks")),
+              _buildCategoryGrid([
+                _categoryItem("Dry Fruits & More", "assets/images/chips.webp"),
+                _categoryItem("Biscuits & Cakes", "assets/images/biscut.webp"),
+                _categoryItem("Cold Drinks & Juices", "assets/images/protien.png"),
+                _categoryItem("Tea, Coffee & Health Drinks", "assets/images/amul.webp"),
+              ]),
+
+              // 🔹 Category Section 3
+              SliverToBoxAdapter(child: _categoryTitle("Home & Cleaning")),
+              _buildCategoryGrid([
+                _categoryItem("Bath & Body", "assets/images/ginger.png"),
+                _categoryItem("Home Essentials", "assets/images/milk.webp"),
+                _categoryItem("Snacks & Chips", "assets/images/chips.webp"),
+                _categoryItem("Sweets & Chocolates", "assets/images/banana.jpeg"),
+              ]),
+
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 30),
+              ),
+            ],
+          ),
         ),
       ),
     );

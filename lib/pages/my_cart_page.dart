@@ -96,73 +96,85 @@ class MyCartPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(image, width: 40, height: 40, fit: BoxFit.scaleDown),
-          ),
-          const SizedBox(width: 10),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            flex: 2,
+            child: Row(
               children: [
-                Text(name,
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                const SizedBox(height: 3),
-                Text(qty, style: const TextStyle(color: Colors.grey)),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(image, width: 40, height: 40, fit: BoxFit.scaleDown),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name,
+                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    const SizedBox(height: 3),
+                    Text(qty, style: const TextStyle(color: Colors.grey)),
+                  ],
+                ),
               ],
             ),
           ),
-          Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xfffce9ff),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.purple,width: 0.3),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(8),
-                      child: const Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Icon(Icons.remove, size: 16, color: Colors.purple),
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xfffce9ff),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.purple,width: 0.3),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  child: Row(
+                    children: [
+                      InkWell(
+                        onTap: () {},
+                        borderRadius: BorderRadius.circular(8),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(Icons.remove, size: 16, color: Colors.purple),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      child: Text('$count',
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: Text('$count',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 14)),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        borderRadius: BorderRadius.circular(8),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(Icons.add, size: 16, color: Colors.purple),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('₹$price',
                           style: const TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 14)),
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(8),
-                      child: const Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Icon(Icons.add, size: 16, color: Colors.purple),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text('₹$price',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 16)),
-                  Text('₹$oldPrice',
-                      style: const TextStyle(
-                          color: Colors.grey,
-                          decoration: TextDecoration.lineThrough,
-                          fontSize: 13)),
-                ],
-              )
-            ],
+                      Text('₹$oldPrice',
+                          style: const TextStyle(
+                              color: Colors.grey,
+                              decoration: TextDecoration.lineThrough,
+                              fontSize: 12
+                          ),),
+                    ],
+                  ),
+                )
+              ],
+            ),
           )
         ],
       ),

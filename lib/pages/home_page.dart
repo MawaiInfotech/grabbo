@@ -39,14 +39,14 @@ class HomePage extends StatelessWidget {
                             children: [
                               Row(
                                 children: const [
-                                  Icon(Icons.flash_on, color: Colors.black, size: 28),
+                                  Icon(Icons.flash_on, color: Colors.purple, size: 28),
                                   SizedBox(width: 6),
                                   Text(
                                     "Grabbo",
                                     style: TextStyle(
                                       fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.purple,
                                     ),
                                   ),
                                 ],
