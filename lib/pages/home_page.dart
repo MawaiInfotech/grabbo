@@ -1,308 +1,354 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grabbo/bloc/cat_tabs_bloc.dart';
+import 'package:grabbo/model/cat_tabs_model.dart';
+import 'package:grabbo/services/homepage_service.dart';
+import 'package:provider/provider.dart';
 
 import '../routes/app_routes.dart';
+import '../state/cat_tabs_state.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+
+}
+
+class _HomePageState extends State<HomePage> {
+
+  late HomepageService homepageService;
+  late CatTabsBloc catTabsBloc;
+
+  @override
+  void initState() {
+    homepageService = Provider.of<HomepageService>(context, listen: false);
+    catTabsBloc = CatTabsBloc(homepageService);
+    catTabsBloc.init();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 6, // number of tabs
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xffffda73),
-                Colors.white,
-                Colors.white,
-              ],
-            ),
-          ),
-          child: SafeArea(
-            child: NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  // 🔹 Logo + Address (scrolls away)
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        body: _buildBody(),
+      ),
+    );
+  }
+
+  _buildBody() {
+    return BlocConsumer<CatTabsBloc, CatTabsState>(
+      bloc: catTabsBloc,
+      listener: (_, state) {},
+      builder: (_, state) {
+        return state.when(
+            loading: _buildLoading,
+            content: _buildContent,
+            success: _buildContent,
+            failed: (form, __) => _buildContent(form));
+      },
+    );
+  }
+
+  Widget _buildLoading(List<CatTabsModel> catalogueModel) {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildContent(List<CatTabsModel> catalogueModel) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xffffda73),
+            Colors.white,
+            Colors.white,
+          ],
+        ),
+      ),
+      child: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              // 🔹 Logo + Address (scrolls away)
+              SliverToBoxAdapter(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Logo & Profile
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Logo & Profile
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: const [
-                                  Icon(Icons.flash_on, color: Colors.purple, size: 28),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    "Grabbo",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.purple,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const CircleAvatar(
-                                radius: 18,
-                                backgroundColor: Colors.white,
-                                child: Icon(Icons.person, color: Colors.black),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-
-                          // Address
-                          Row(
-                            children: const [
-                              Icon(Icons.location_on_outlined, color: Colors.black),
-                              SizedBox(width: 4),
+                              Icon(Icons.flash_on, color: Colors.purple, size: 28),
+                              SizedBox(width: 6),
                               Text(
-                                "A Block, Sector 63, Noida",
-                                style: TextStyle(fontSize: 14, color: Colors.black),
-                              ),
-                              Icon(Icons.arrow_drop_down, color: Colors.black),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  SliverAppBar(
-                    pinned: true,
-                    backgroundColor: Color(0xfffdefc6),
-                    elevation: 2,
-                    automaticallyImplyLeading: false,
-                    toolbarHeight: 70,
-                    flexibleSpace: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            )
-                          ],
-                        ),
-                        child: Row(
-                          children: const [
-                            Icon(Icons.search, color: Colors.black54),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: 'Search "20000 mah powerbank..."',
-                                  border: InputBorder.none,
+                                "Grabbo",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.purple,
                                 ),
                               ),
-                            ),
-                            Icon(Icons.mic, color: Colors.black54),
-                          ],
-                        ),
+                            ],
+                          ),
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundColor: Colors.white,
+                            child: Icon(Icons.person, color: Colors.black),
+                          ),
+                        ],
                       ),
+                      SizedBox(height: 6),
+
+                      // Address
+                      Row(
+                        children: [
+                          Icon(Icons.location_on_outlined, color: Colors.black),
+                          SizedBox(width: 4),
+                          Text(
+                            "A Block, Sector 63, Noida",
+                            style: TextStyle(fontSize: 14, color: Colors.black),
+                          ),
+                          Icon(Icons.arrow_drop_down, color: Colors.black),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
+
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: const Color(0xfffdefc6),
+                elevation: 2,
+                automaticallyImplyLeading: false,
+                toolbarHeight: 70,
+                flexibleSpace: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        )
+                      ],
                     ),
-
-                    bottom: TabBar(
-                      isScrollable: true,
-
-                      indicatorColor: Colors.black,
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.black54,
-                      labelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-                      tabs: const [
-                        Tab(text: "All", icon: Icon(Icons.dashboard,size: 20,)),
-                        Tab(text: "Pharmacy", icon: Icon(Icons.local_hospital,size: 20,)),
-                        Tab(text: "Electronics", icon: Icon(Icons.devices,size: 20,)),
-                        Tab(text: "Fresh", icon: Icon(Icons.apple,size: 20,)),
-                        Tab(text: "Fashion", icon: Icon(Icons.checkroom,size: 20,)),
-                        Tab(text: "New", icon: Icon(Icons.star_border,size: 20,)),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.search, color: Colors.black54),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Search "20000 mah powerbank..."',
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        Icon(Icons.mic, color: Colors.black54),
                       ],
                     ),
                   ),
-                ];
-              },
+                ),
 
-              body: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 🔹 Banner
-                    InkWell(
-                      onTap: (){
-                        Navigator.pushNamed(context, AppRoutes.productDetailPage);
+                bottom: const TabBar(
+                  isScrollable: true,
 
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.all(12),
-                        height: 160,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: const DecorationImage(
-                            image: AssetImage("assets/images/slider_image.png"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // 🔹 Top Categories
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        "Top Categories",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    SizedBox(
-                      height: 90,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        children: [
-                          _circleCategory("Watch", "assets/images/watch.png"),
-                          _circleCategory("Shirt", "assets/images/watch.png"),
-                          _circleCategory("Sports", "assets/images/watch.png"),
-                          _circleCategory("Trackpants", "assets/images/watch.png"),
-                          _circleCategory("New Trend", "assets/images/watch.png"),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // 🔹 Bestseller
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        "Bestseller",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: GridView.count(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 4/5,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          _gridCategory(
-                            "Vegetables & Fruits", [
-                            "assets/images/ginger.png",
-                            "assets/images/banana.jpeg",
-                            "assets/images/onion.jpg",
-                            "assets/images/ginger.png",
-                          ], "+172 more"),
-                          _gridCategory(
-                            "Dairy, Bread & Eggs", [
-                            "assets/images/amul.webp",
-                            "assets/images/bun.jpg",
-                            "assets/images/milk.webp",
-                            "assets/images/protien.png",
-                          ], "+33 more"),
-                          _gridCategory(
-                            "Oil, Ghee & Masala", [
-                            "assets/images/oil.jpg",
-                            "assets/images/fortune.jpg",
-                            "assets/images/aata.webp",
-                            "assets/images/protien.png",
-                          ], "+226 more"),
-                          _gridCategory(
-                            "Vegetables & Fruits", [
-                            "assets/images/protien.png",
-                            "assets/images/biscut.webp",
-                            "assets/images/onion.jpg",
-                            "assets/images/ginger.png",
-                          ], "+172 more"),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        "Grocery & Kitchen",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: GridView.count(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 1/1.2,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          _categoryTile("Vegetables & Fruits", "assets/images/veget.png"),
-                          _categoryTile("Atta, Rice & Dal", "assets/images/aata.webp"),
-                          _categoryTile("Oil, Ghee & Masala", "assets/images/oil.jpg"),
-                          _categoryTile("Dairy, Bread & Eggs", "assets/images/protien.png"),
-                          _categoryTile("Dry Fruits & Cereals", "assets/images/ginger.png"),
-                          _categoryTile("Bekery & Biscuits", "assets/images/biscut.webp"),
-                          _categoryTile("Kitchen Bottle", "assets/images/fortune.jpg"),
-                          _categoryTile("Dairy Milk & Milk", "assets/images/amul.webp"),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        "Snacks & Drinks",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: GridView.count(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        shrinkWrap: true,
-                        childAspectRatio: 1/1.2,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: [
-                          _categoryTile("Chips & Namkeen", "assets/images/chips.webp"),
-                          _categoryTile("Drinks & Juices", "assets/images/protien.png"),
-                          _categoryTile("Tea, Coffee & Milk", "assets/images/milk.webp"),
-                          _categoryTile("Sweets & Chocolates", "assets/images/biscut.webp"),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
+                  indicatorColor: Colors.black,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.black54,
+                  labelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                  tabs: [
+                    Tab(text: "All", icon: Icon(Icons.dashboard,size: 20,)),
+                    Tab(text: "Pharmacy", icon: Icon(Icons.local_hospital,size: 20,)),
+                    Tab(text: "Electronics", icon: Icon(Icons.devices,size: 20,)),
+                    Tab(text: "Fresh", icon: Icon(Icons.apple,size: 20,)),
+                    Tab(text: "Fashion", icon: Icon(Icons.checkroom,size: 20,)),
+                    Tab(text: "New", icon: Icon(Icons.star_border,size: 20,)),
                   ],
                 ),
               ),
+            ];
+          },
+
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 🔹 Banner
+                InkWell(
+                  onTap: (){
+                    Navigator.pushNamed(context, AppRoutes.productDetailPage);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(12),
+                    height: 160,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: const DecorationImage(
+                        image: AssetImage("assets/images/slider_image.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 🔹 Top Categories
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    "Top Categories",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                SizedBox(
+                  height: 90,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    children: [
+                      _circleCategory("Watch", "assets/images/watch.png"),
+                      _circleCategory("Shirt", "assets/images/watch.png"),
+                      _circleCategory("Sports", "assets/images/watch.png"),
+                      _circleCategory("Trackpants", "assets/images/watch.png"),
+                      _circleCategory("New Trend", "assets/images/watch.png"),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // 🔹 Bestseller
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    "Bestseller",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 4/5,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      _gridCategory(
+                          "Vegetables & Fruits", [
+                        "assets/images/ginger.png",
+                        "assets/images/banana.jpeg",
+                        "assets/images/onion.jpg",
+                        "assets/images/ginger.png",
+                      ], "+172 more"
+                      ),
+                      _gridCategory(
+                          "Dairy, Bread & Eggs", [
+                        "assets/images/amul.webp",
+                        "assets/images/bun.jpg",
+                        "assets/images/milk.webp",
+                        "assets/images/protien.png",
+                      ], "+33 more"),
+                      _gridCategory(
+                          "Oil, Ghee & Masala", [
+                        "assets/images/oil.jpg",
+                        "assets/images/fortune.jpg",
+                        "assets/images/aata.webp",
+                        "assets/images/protien.png",
+                      ], "+226 more"),
+                      _gridCategory(
+                          "Vegetables & Fruits", [
+                        "assets/images/protien.png",
+                        "assets/images/biscut.webp",
+                        "assets/images/onion.jpg",
+                        "assets/images/ginger.png",
+                      ], "+172 more"),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    "Grocery & Kitchen",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: GridView.count(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1/1.2,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      _categoryTile("Vegetables & Fruits", "assets/images/veget.png"),
+                      _categoryTile("Atta, Rice & Dal", "assets/images/aata.webp"),
+                      _categoryTile("Oil, Ghee & Masala", "assets/images/oil.jpg"),
+                      _categoryTile("Dairy, Bread & Eggs", "assets/images/protien.png"),
+                      _categoryTile("Dry Fruits & Cereals", "assets/images/ginger.png"),
+                      _categoryTile("Bekery & Biscuits", "assets/images/biscut.webp"),
+                      _categoryTile("Kitchen Bottle", "assets/images/fortune.jpg"),
+                      _categoryTile("Dairy Milk & Milk", "assets/images/amul.webp"),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    "Snacks & Drinks",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: GridView.count(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    shrinkWrap: true,
+                    childAspectRatio: 1/1.2,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      _categoryTile("Chips & Namkeen", "assets/images/chips.webp"),
+                      _categoryTile("Drinks & Juices", "assets/images/protien.png"),
+                      _categoryTile("Tea, Coffee & Milk", "assets/images/milk.webp"),
+                      _categoryTile("Sweets & Chocolates", "assets/images/biscut.webp"),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+              ],
             ),
           ),
         ),
@@ -310,7 +356,8 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  static Widget _circleCategory(String title, String imagePath) {
+
+  _circleCategory(String title, String imagePath) {
     return Container(
       margin: const EdgeInsets.only(right: 14),
       child: Column(
@@ -327,7 +374,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  static Widget _categoryTile(String title, String imagePath) {
+  _categoryTile(String title, String imagePath) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -353,17 +400,17 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  static Widget _gridCategory(String title, List<String> imagePaths, String more) {
+  _gridCategory(String title, List<String> imagePaths, String more) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 5,
-            offset: const Offset(0, 3),
+            offset: Offset(0, 3),
           ),
         ],
       ),
@@ -400,8 +447,8 @@ class HomePage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration:  BoxDecoration(
-              color: Colors.black12,
-              borderRadius: BorderRadius.circular(30)
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(30)
             ),
             child: Text(
               more,
@@ -413,17 +460,17 @@ class HomePage extends StatelessWidget {
             ),
           ),
           Expanded(
-                child: Center(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: null, // allow wrapping
-                  ),
+            child: Center(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                 ),
+                maxLines: null, // allow wrapping
               ),
+            ),
+          ),
         ],
       ),
     );

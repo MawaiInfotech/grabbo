@@ -25,7 +25,7 @@ class AppRoutes {
     return <String, Widget Function(BuildContext)>{
       loginPage: (_) => const LoginPage(),
       signUpPage: (_) => const SignUpPage(),
-      otpVerificationPage: (_) => const OtpVerificationPage(),
+   //   otpVerificationPage: (_) => const OtpVerificationPage(),
       navigationPage: (_) => const NavigationPage(),
       homePage: (_) => const HomePage(),
       productDetailPage: (_) => const ProductDetailsPage(),

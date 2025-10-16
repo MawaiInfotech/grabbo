@@ -1,17 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grabbo/bloc/login_verify_otp_bloc.dart';
+import 'package:grabbo/pages/navigation_page.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
 import '../routes/app_routes.dart';
+import '../services/login_service.dart';
+import '../state/login_otp_state.dart';
+import '../utils/snackbar_utils.dart';
 
 class OtpVerificationPage extends StatefulWidget {
-  const OtpVerificationPage({super.key});
+  const OtpVerificationPage({super.key, required this.phone});
+
+  final String phone;
 
   @override
   State<OtpVerificationPage> createState() => _OtpVerificationPageState();
 }
 
 class _OtpVerificationPageState extends State<OtpVerificationPage> {
+
   final TextEditingController _otpController = TextEditingController();
+
+  late LoginService loginService;
+  late LoginVerifyOtpBloc loginVerifyOtpBloc;
+
+
+
+  @override
+  void initState() {
+    loginService = Provider.of<LoginService>(context, listen: false);
+    loginVerifyOtpBloc = LoginVerifyOtpBloc(loginService);
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +70,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 const SizedBox(height: 20),
 
                 // Title
-                Center(
-                  child: const Text(
+                const Center(
+                  child: Text(
                     "Verification Code",
                     style: TextStyle(
                       fontSize: 22,
@@ -58,11 +81,11 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 ),
                 const SizedBox(height: 20),
 
-                Center(
-                  child: const Text(
-                    "We have sent the verification code on mobile number \n +233 000 000 000",
+                 Center(
+                  child: Text(
+                    "We have sent the verification code on mobile number \n ${widget.phone}",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 15,
                       color: Colors.black54,
                       fontWeight: FontWeight.w500
@@ -74,7 +97,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 Center(
                   child: Pinput(
                     controller: _otpController,
-                    length: 6,
+                    length: 4,
                     defaultPinTheme: PinTheme(
                       width: 40,
                       height: 45,
@@ -124,31 +147,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
 
                 const SizedBox(height: 40),
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffec7d18),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    onPressed: () {
-                      debugPrint("Submitted OTP: ${_otpController.text}");
-                      Navigator.pushNamed(context, AppRoutes.navigationPage);
-
-                    },
-                    child: const Text(
-                      "Submit",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
+               buildSubmitContainer(),
                 const SizedBox(height: 20),
 
                 Center(
@@ -168,8 +167,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 ),
                 const Spacer(),
 
-                Column(
-                  children: const [
+                const Column(
+                  children: [
                     Text.rich(
                       TextSpan(
                         text: "By continuing, You agree to our ",
@@ -202,6 +201,65 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       ),
     );
   }
+
+  Widget buildSubmitContainer() {
+    print(_otpController.text);
+    return BlocConsumer<LoginVerifyOtpBloc, LoginOtpState>(
+        bloc: loginVerifyOtpBloc,
+        listener: (_, state) {
+          state.maybeWhen(
+              success: (_, message) {
+                SnackBarUtils.show(
+                  context,
+                  message: message ?? "Logged In successfully 🎉",
+                  // isSuccess: false,
+                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  const NavigationPage()));
+              },
+              failed: (_, message) {
+                SnackBarUtils.show(
+                  context,
+                  message: message ,
+                   isSuccess: false,
+                );
+              },
+              orElse: () {
+
+              });
+        },
+        builder: (context, state) {
+          return state.maybeWhen(loading: (_) {
+            return const CircularProgressIndicator();
+          }, orElse: () {
+            return ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xffec7d18),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+              ),
+              onPressed: () {
+                _submitOTP();
+              },
+              child: const Center(
+                child: Text(
+                  "Submit",
+                  style: TextStyle(color: Colors.white, fontSize: 17),
+                ),
+              ),
+            );
+          });
+        });
+  }
+
+  void _submitOTP() async {
+    // print(pinController.text);
+
+    await loginVerifyOtpBloc.loginOTP(widget.phone,_otpController.text);
+  }
+
 }
 
 //

@@ -83,7 +83,8 @@ class CategoriesPage extends StatelessWidget {
                     onTap: (){
                       Navigator.pushNamed(context, AppRoutes.subCategoryPage);
                     },
-                    child: _categoryItem("Vegetables & Fruits", "assets/images/fortune.jpg")),
+                    child: _categoryItem("Vegetables & Fruits", "assets/images/fortune.jpg"),
+                ),
                 _categoryItem("Atta, Rice & Dal", "assets/images/oil.jpg"),
                 _categoryItem("Oil, Ghee & Masala", "assets/images/onion.jpg"),
                 _categoryItem("Dairy, Bread & Eggs", "assets/images/aata.webp"),

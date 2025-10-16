@@ -1,7 +1,7 @@
-const root= 'http://192.168.1.143:5000/api/';
+const root= 'http://192.168.1.196:5000/api/';
 
 const headers = <String, String>{
   'Accept': 'Application/json',
   'Content-Type' : 'Application/json',
-  'Authorization' : "Basic bW9iaWxlLWFuZHJvaWQ6c2VjcmV0"
+ //  'Authorization' : "Basic bW9iaWxlLWFuZHJvaWQ6c2VjcmV0"
 };

@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grabbo/bloc/login_otp_bloc.dart';
+import 'package:grabbo/pages/otp_verification_page.dart';
+import 'package:grabbo/utils/snackbar_utils.dart';
+import 'package:provider/provider.dart';
 
 import '../routes/app_routes.dart';
+import '../services/login_service.dart';
+import '../state/login_otp_state.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,7 +19,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String selectedCode = "+233";
   bool rememberMe = false;
-  bool _obscure = true;
+
+  late LoginService loginService;
+  late LoginOtpBloc loginOtpBloc;
+  TextEditingController phoneController = TextEditingController();
+
+
+  @override
+  void initState() {
+    loginService = Provider.of<LoginService>(context, listen: false);
+    loginOtpBloc = LoginOtpBloc(loginService);
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
           color: Colors.transparent,
           height: 20,
-          child:Center(child: Text("© 2025 Mawai Infotech PVT LTD. Powered by Goerp.ai.",
+          child:const Center(child: Text("© 2025 Mawai Infotech PVT LTD. Powered by Goerp.ai.",
           style: TextStyle(
             fontWeight: FontWeight.w500,
             color: Colors.grey
@@ -50,7 +69,10 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            Navigator.pushNamed(context, AppRoutes.navigationPage);
+
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black.withOpacity(0.2),
                             elevation: 0,
@@ -62,12 +84,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
 
                           ),
-                          child: Text("Skip >",style: TextStyle(color: Colors.black))
+                          child: const Text("Skip >",style: TextStyle(color: Colors.black))
                       )
                     ],
                   ),
                   Image.asset("assets/images/shopping1.png", scale: 1),
-                  SizedBox(height: 20,),
+                  const SizedBox(height: 20,),
                   Image.asset("assets/images/new-logo.png",scale: 10, ),
 
                   const SizedBox(height: 50),
@@ -84,9 +106,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextField(
                     keyboardType: TextInputType.phone,
+                    controller: phoneController,
                     decoration: InputDecoration(
                       hintText: "Enter your phone number",
-                      hintStyle: TextStyle(
+                      hintStyle: const TextStyle(
                         color: Colors.grey
                       ),
                       prefixIcon: Container(
@@ -122,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                       focusedBorder: _border(),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                     ),
                   ),
 
@@ -190,29 +213,11 @@ class _LoginPageState extends State<LoginPage> {
                   // ),
                   //
                   // const SizedBox(height: 0),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffec7d18),
-                       padding: const EdgeInsets.symmetric(
-                           vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.otpVerificationPage);
-                    },
-                    child: Center(
-                      child: const Text(
-                        "SEND OTP",
-                        style: TextStyle(color: Colors.white, fontSize: 17),
-                      ),
-                    ),
-                  ),
+                 buildSubmitContainer(),
 
                   SizedBox(height: MediaQuery.of(context).size.height*0.2),
-                  Text("By Continuing, You agree to our"),
-                  Text("Terms and Conditions & Privacy Policy",
+                  const Text("By Continuing, You agree to our"),
+                  const Text("Terms and Conditions & Privacy Policy",
                   style: TextStyle(
                     color: Color(0xffec7d18),
                   fontWeight: FontWeight.w500
@@ -228,10 +233,66 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget buildSubmitContainer() {
+    return BlocConsumer<LoginOtpBloc, LoginOtpState>(
+        bloc: loginOtpBloc,
+        listener: (_, state) {
+          state.maybeWhen(
+              success: (_, message) {
+                SnackBarUtils.show(
+                  context,
+                  message: message ?? "OTP sent successfully 🎉",
+                 // isSuccess: false,
+                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  OtpVerificationPage(phone: phoneController.text)));
+              },
+              failed: (_, message) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+              },
+              orElse: () {
+
+              });
+        },
+        builder: (context, state) {
+          return state.maybeWhen(loading: (_) {
+            return const CircularProgressIndicator();
+          }, orElse: () {
+            return ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xffec7d18),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+              ),
+              onPressed: () {
+                _submitOTP();
+              },
+              child: const Center(
+                child: Text(
+                  "SEND OTP",
+                  style: TextStyle(color: Colors.white, fontSize: 17),
+                ),
+              ),
+            );
+          });
+        });
+  }
+
+  void _submitOTP() async {
+    // print(pinController.text);
+
+    await loginOtpBloc.loginOTP(phoneController.text);
+  }
+
   _border() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(40),
       borderSide: const BorderSide(color: Colors.grey),
     );
   }
+
+
+
 }
