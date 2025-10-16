@@ -119,6 +119,7 @@ class HomePage extends StatelessWidget {
 
                     bottom: TabBar(
                       isScrollable: true,
+
                       indicatorColor: Colors.black,
                       labelColor: Colors.black,
                       unselectedLabelColor: Colors.black54,
@@ -206,25 +207,29 @@ class HomePage extends StatelessWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
-                          _gridCategory("Vegetables & Fruits", [
+                          _gridCategory(
+                            "Vegetables & Fruits", [
                             "assets/images/ginger.png",
                             "assets/images/banana.jpeg",
                             "assets/images/onion.jpg",
                             "assets/images/ginger.png",
                           ], "+172 more"),
-                          _gridCategory("Dairy, Bread & Eggs", [
+                          _gridCategory(
+                            "Dairy, Bread & Eggs", [
                             "assets/images/amul.webp",
                             "assets/images/bun.jpg",
                             "assets/images/milk.webp",
                             "assets/images/protien.png",
                           ], "+33 more"),
-                          _gridCategory("Oil, Ghee & Masala", [
+                          _gridCategory(
+                            "Oil, Ghee & Masala", [
                             "assets/images/oil.jpg",
                             "assets/images/fortune.jpg",
                             "assets/images/aata.webp",
                             "assets/images/protien.png",
                           ], "+226 more"),
-                          _gridCategory("Vegetables & Fruits", [
+                          _gridCategory(
+                            "Vegetables & Fruits", [
                             "assets/images/protien.png",
                             "assets/images/biscut.webp",
                             "assets/images/onion.jpg",
@@ -233,8 +238,8 @@ class HomePage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
 
+                    const SizedBox(height: 20),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12),
                       child: Text(

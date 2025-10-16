@@ -113,8 +113,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                         CircleAvatar(
                           radius: 25,
                           backgroundColor: Colors.transparent,
-                          backgroundImage:
-                          AssetImage(categories[index]['icon']),
+                          backgroundImage: AssetImage(categories[index]['icon']),
                         ),
                         const SizedBox(height: 6),
                         Text(
