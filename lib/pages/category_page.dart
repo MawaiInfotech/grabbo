@@ -127,7 +127,7 @@ class CategoriesPage extends StatelessWidget {
                 _categoryItem("Cold Drinks & Juices", "assets/images/protien.png"),
                 _categoryItem("Tea, Coffee & Health Drinks", "assets/images/amul.webp"),
               ]),
-
+//hello
               // 🔹 Category Section 3
               SliverToBoxAdapter(child: _categoryTitle("Home & Cleaning")),
               _buildCategoryGrid([
