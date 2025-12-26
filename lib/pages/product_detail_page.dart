@@ -45,11 +45,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
 
               // 🔹 Product Title and Price
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "Pooja Flower Mix",
                       style:
@@ -164,7 +164,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
         _infoRow(
             "Seller",
-            "GRABBO HYPERPURE PRIVATE LIMITED\nA-164 Sec-63 Noida, Gautam Budh Nagar U.P 201301"),
+            "GRABBO HYPERPURE PRIVATE LIMITED\nA-164 Sec-63 Noida, Gautam Buddha Nagar U.P 201301"),
       ],
     );
   }
@@ -198,9 +198,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text("Similar products",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               Text("See All", style: TextStyle(color: Colors.blue)),
@@ -219,11 +219,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 3,
-                        offset: const Offset(0, 2),
+                        offset: Offset(0, 2),
                       ),
                     ],
                   ),

@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 
 import '../routes/app_routes.dart';
 import '../state/cat_tabs_state.dart';
+import '../utils/category_icons.dart';
+import '../widgets/grocer_loader.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,6 +22,7 @@ class _HomePageState extends State<HomePage> {
 
   late HomepageService homepageService;
   late CatTabsBloc catTabsBloc;
+  int selectedCategoryIndex = 0;
 
   @override
   void initState() {
@@ -32,9 +35,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6, // number of tabs
+      length: 7, // number of tabs
       child: Scaffold(
-        body: _buildBody(),
+        body: _buildBody()
       ),
     );
   }
@@ -53,11 +56,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildLoading(List<CatTabsModel> catalogueModel) {
-    return const Center(child: CircularProgressIndicator());
+  Widget _buildLoading(List<CatTabsModel> model) {
+    return Center(child: GroceryLoader.initial());
   }
 
-  Widget _buildContent(List<CatTabsModel> catalogueModel) {
+  Widget _buildContent(List<CatTabsModel> model) {
+    print(model.length);
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -74,20 +78,20 @@ class _HomePageState extends State<HomePage> {
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
-              // 🔹 Logo + Address (scrolls away)
+              // 🔹 Logo + Address
               SliverToBoxAdapter(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Logo & Profile
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.flash_on, color: Colors.purple, size: 28),
+                              Icon(Icons.flash_on,
+                                  color: Colors.purple, size: 28),
                               SizedBox(width: 6),
                               Text(
                                 "Grabbo",
@@ -107,84 +111,144 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       SizedBox(height: 6),
-
-                      // Address
                       Row(
                         children: [
-                          Icon(Icons.location_on_outlined, color: Colors.black),
+                          Icon(Icons.location_on_outlined),
                           SizedBox(width: 4),
-                          Text(
-                            "A Block, Sector 63, Noida",
-                            style: TextStyle(fontSize: 14, color: Colors.black),
-                          ),
-                          Icon(Icons.arrow_drop_down, color: Colors.black),
+                          Text("A Block, Sector 63, Noida"),
+                          Icon(Icons.arrow_drop_down),
                         ],
                       ),
-                      SizedBox(height: 10),
                     ],
                   ),
                 ),
               ),
 
+              // 🔹 Search + Category Buttons
               SliverAppBar(
                 pinned: true,
-                backgroundColor: const Color(0xfffdefc6),
                 elevation: 2,
+                backgroundColor: const Color(0xfffdefc6),
                 automaticallyImplyLeading: false,
-                toolbarHeight: 70,
-                flexibleSpace: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        )
-                      ],
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.search, color: Colors.black54),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Search "20000 mah powerbank..."',
-                              border: InputBorder.none,
-                            ),
-                          ),
+                toolbarHeight: 130,
+
+                flexibleSpace: Column(
+                  children: [
+                    // 🔍 Search Bar
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            )
+                          ],
                         ),
-                        Icon(Icons.mic, color: Colors.black54),
-                      ],
+                        child: const Row(
+                          children: [
+                            Icon(Icons.search, color: Colors.black54),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  hintText:
+                                  'Search "20000 mah powerbank..."',
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            Icon(Icons.mic, color: Colors.black54),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
 
-                bottom: const TabBar(
-                  isScrollable: true,
+                    // 🔘 CATEGORY BUTTONS (API DRIVEN)
+                    SizedBox(
+                      height: 60,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        padding:
+                        const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: model.length,
+                        itemBuilder: (context, index) {
 
-                  indicatorColor: Colors.black,
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.black54,
-                  labelStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-                  tabs: [
-                    Tab(text: "All", icon: Icon(Icons.dashboard,size: 20,)),
-                    Tab(text: "Pharmacy", icon: Icon(Icons.local_hospital,size: 20,)),
-                    Tab(text: "Electronics", icon: Icon(Icons.devices,size: 20,)),
-                    Tab(text: "Fresh", icon: Icon(Icons.apple,size: 20,)),
-                    Tab(text: "Fashion", icon: Icon(Icons.checkroom,size: 20,)),
-                    Tab(text: "New", icon: Icon(Icons.star_border,size: 20,)),
+                          final item = model[index];
+                          final isSelected =
+                              selectedCategoryIndex == index;
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedCategoryIndex = index;
+                              });
+
+                              // 🔥 Reload data here
+                              // catTabsBloc.loadCategory(
+                              //   item.categoryName,
+                              // );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 12),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.white
+                                    : Colors.transparent,
+                                borderRadius:
+                                BorderRadius.circular(10),
+                                boxShadow: isSelected
+                                    ? const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  )
+                                ]
+                                    : [],
+                              ),
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    CategoryIcons.getIcon(item.name),
+                                    width: 25,
+                                    height: 25,
+                                  )
+                                  ,
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    item.name,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
             ];
           },
 
+          // 🔻 BODY RELOADS BASED ON CATEGORY
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,6 +306,7 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
+
                 const SizedBox(height: 10),
 
                 Padding(
@@ -260,8 +325,7 @@ class _HomePageState extends State<HomePage> {
                         "assets/images/banana.jpeg",
                         "assets/images/onion.jpg",
                         "assets/images/ginger.png",
-                      ], "+172 more"
-                      ),
+                      ], "+172 more"),
                       _gridCategory(
                           "Dairy, Bread & Eggs", [
                         "assets/images/amul.webp",
@@ -350,9 +414,10 @@ class _HomePageState extends State<HomePage> {
 
               ],
             ),
-          ),
+          )
         ),
       ),
+
     );
   }
 
@@ -440,8 +505,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-              )
-                  .toList(),
+              ).toList(),
             ),
           ),
           Container(

@@ -21,6 +21,7 @@ LoginOtpModel _$LoginOtpModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LoginOtpModel {
   bool get status => throw _privateConstructorUsedError;
+  String get user_id => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -35,7 +36,7 @@ abstract class $LoginOtpModelCopyWith<$Res> {
           LoginOtpModel value, $Res Function(LoginOtpModel) then) =
       _$LoginOtpModelCopyWithImpl<$Res, LoginOtpModel>;
   @useResult
-  $Res call({bool status, String message});
+  $Res call({bool status, String user_id, String message});
 }
 
 /// @nodoc
@@ -52,6 +53,7 @@ class _$LoginOtpModelCopyWithImpl<$Res, $Val extends LoginOtpModel>
   @override
   $Res call({
     Object? status = null,
+    Object? user_id = null,
     Object? message = null,
   }) {
     return _then(_value.copyWith(
@@ -59,6 +61,10 @@ class _$LoginOtpModelCopyWithImpl<$Res, $Val extends LoginOtpModel>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as bool,
+      user_id: null == user_id
+          ? _value.user_id
+          : user_id // ignore: cast_nullable_to_non_nullable
+              as String,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -75,7 +81,7 @@ abstract class _$$LoginOtpModelImplCopyWith<$Res>
       __$$LoginOtpModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool status, String message});
+  $Res call({bool status, String user_id, String message});
 }
 
 /// @nodoc
@@ -90,6 +96,7 @@ class __$$LoginOtpModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? status = null,
+    Object? user_id = null,
     Object? message = null,
   }) {
     return _then(_$LoginOtpModelImpl(
@@ -97,6 +104,10 @@ class __$$LoginOtpModelImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as bool,
+      user_id: null == user_id
+          ? _value.user_id
+          : user_id // ignore: cast_nullable_to_non_nullable
+              as String,
       message: null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
@@ -108,7 +119,8 @@ class __$$LoginOtpModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$LoginOtpModelImpl implements _LoginOtpModel {
-  const _$LoginOtpModelImpl({this.status = false, this.message = ""});
+  const _$LoginOtpModelImpl(
+      {this.status = false, this.user_id = "", this.message = ""});
 
   factory _$LoginOtpModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginOtpModelImplFromJson(json);
@@ -118,11 +130,14 @@ class _$LoginOtpModelImpl implements _LoginOtpModel {
   final bool status;
   @override
   @JsonKey()
+  final String user_id;
+  @override
+  @JsonKey()
   final String message;
 
   @override
   String toString() {
-    return 'LoginOtpModel(status: $status, message: $message)';
+    return 'LoginOtpModel(status: $status, user_id: $user_id, message: $message)';
   }
 
   @override
@@ -131,12 +146,13 @@ class _$LoginOtpModelImpl implements _LoginOtpModel {
         (other.runtimeType == runtimeType &&
             other is _$LoginOtpModelImpl &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.user_id, user_id) || other.user_id == user_id) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, status, message);
+  int get hashCode => Object.hash(runtimeType, status, user_id, message);
 
   @JsonKey(ignore: true)
   @override
@@ -153,14 +169,18 @@ class _$LoginOtpModelImpl implements _LoginOtpModel {
 }
 
 abstract class _LoginOtpModel implements LoginOtpModel {
-  const factory _LoginOtpModel({final bool status, final String message}) =
-      _$LoginOtpModelImpl;
+  const factory _LoginOtpModel(
+      {final bool status,
+      final String user_id,
+      final String message}) = _$LoginOtpModelImpl;
 
   factory _LoginOtpModel.fromJson(Map<String, dynamic> json) =
       _$LoginOtpModelImpl.fromJson;
 
   @override
   bool get status;
+  @override
+  String get user_id;
   @override
   String get message;
   @override

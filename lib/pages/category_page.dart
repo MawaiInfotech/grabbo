@@ -10,7 +10,7 @@ class CategoriesPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.yellow.shade100,
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [ Color(0xffffda73),  Colors.white, Colors.white],
             begin: Alignment.topCenter,
@@ -21,9 +21,9 @@ class CategoriesPage extends StatelessWidget {
           child: CustomScrollView(
             slivers: [
               // 🔹 App Header
-              SliverToBoxAdapter(
+              const SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -128,7 +128,6 @@ class CategoriesPage extends StatelessWidget {
                 _categoryItem("Cold Drinks & Juices", "assets/images/protien.png"),
                 _categoryItem("Tea, Coffee & Health Drinks", "assets/images/amul.webp"),
               ]),
-
               // 🔹 Category Section 3
               SliverToBoxAdapter(child: _categoryTitle("Home & Cleaning")),
               _buildCategoryGrid([

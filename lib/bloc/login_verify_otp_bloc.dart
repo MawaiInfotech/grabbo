@@ -8,10 +8,10 @@ class LoginVerifyOtpBloc extends Cubit<LoginOtpState>{
 
   LoginService loginService;
 
-  Future<void> loginOTP(String phone,String otp)async{
+  Future<void> loginOTP(String otp)async{
     try{
       emit(LoginOtpState.loading(state.loginOtpModel));
-      final message = await loginService.verifyLoginOTP(phone, otp);
+      final message = await loginService.verifyLoginOTP( otp);
       emit(LoginOtpState.success(state.loginOtpModel, message));
     }on ApiError catch(error){
       emit(LoginOtpState.failed(state.loginOtpModel,  error.message));

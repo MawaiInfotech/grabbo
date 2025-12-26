@@ -9,6 +9,7 @@ class CatTabsModel with _$CatTabsModel{
     @JsonKey(name: "category_code") @Default("") String code,
     @JsonKey(name: "category_name") @Default("") String name,
     @JsonKey(name: "category_icon") @Default("") String icon,
+    @JsonKey(name: "level") @Default(0) int level,
   }) = _CatTabsModel;
 
   factory CatTabsModel.fromJson(Map<String, dynamic> json) => _$CatTabsModelFromJson(json);

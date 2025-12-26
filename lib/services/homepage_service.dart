@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:grabbo/model/cat_tabs_model.dart';
-
 import '../error/api_error.dart';
 import 'package:http/http.dart' as http;
-
 import 'constant.dart';
 
 
@@ -16,7 +13,6 @@ class HomepageService{
     const url = '${root}product/productCategory';
     try {
       final response = await http.get(Uri.parse(url), headers: headers);
-
       final responseBody = json.decode(response.body);
       print(responseBody);
       if (responseBody['status'] == true) {

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:grabbo/prefbox.dart';
+
 import '../error/api_error.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,11 +19,13 @@ class LoginService{
     const url = '${root}users/logIn_otp';
     final body = {
       'phone': phone,
+      'channel': 'SMS'
     };
     try {
       final response = await http.post(Uri.parse(url), body: json.encode(body), headers: headers);
       final responseBody = json.decode(response.body);
       if (responseBody['status'] == true) {
+        await prefsBox.put(kUserId, responseBody["user_id"]);
         return responseBody['message'];
       }else{
         throw ApiError.fromResponse(responseBody['message']);
@@ -32,13 +36,12 @@ class LoginService{
     return null;
   }
 
-  Future<String?> verifyLoginOTP(String phone,String otp) async {
+  Future<String?> verifyLoginOTP(String otp) async {
     const url = '${root}users/verify_otp';
     final body = {
-      'phone': phone,
+      'user_id': userId,
       'otp' : otp
     };
-    print(body);
     try {
       final response = await http.post(Uri.parse(url), body: json.encode(body), headers: headers);
       final responseBody = json.decode(response.body);

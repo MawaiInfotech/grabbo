@@ -11,6 +11,7 @@ _$CatTabsModelImpl _$$CatTabsModelImplFromJson(Map<String, dynamic> json) =>
       code: json['category_code'] as String? ?? "",
       name: json['category_name'] as String? ?? "",
       icon: json['category_icon'] as String? ?? "",
+      level: (json['level'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$$CatTabsModelImplToJson(_$CatTabsModelImpl instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$$CatTabsModelImplToJson(_$CatTabsModelImpl instance) =>
       'category_code': instance.code,
       'category_name': instance.name,
       'category_icon': instance.icon,
+      'level': instance.level,
     };

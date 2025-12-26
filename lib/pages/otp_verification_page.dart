@@ -257,7 +257,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   void _submitOTP() async {
     // print(pinController.text);
 
-    await loginVerifyOtpBloc.loginOTP(widget.phone,_otpController.text);
+    await loginVerifyOtpBloc.loginOTP(_otpController.text);
   }
 
 }

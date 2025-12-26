@@ -7,6 +7,7 @@ part 'login_otp_model.freezed.dart';
 class LoginOtpModel with _$LoginOtpModel{
   const factory LoginOtpModel({
     @Default(false) bool status,
+    @Default("") String user_id,
     @Default("") String message,
   }) = _LoginOtpModel;
 
