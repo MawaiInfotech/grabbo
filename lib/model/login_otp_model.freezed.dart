@@ -20,7 +20,7 @@ LoginOtpModel _$LoginOtpModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$LoginOtpModel {
-  bool get status => throw _privateConstructorUsedError;
+  bool get success => throw _privateConstructorUsedError;
   String get user_id => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
 
@@ -36,7 +36,7 @@ abstract class $LoginOtpModelCopyWith<$Res> {
           LoginOtpModel value, $Res Function(LoginOtpModel) then) =
       _$LoginOtpModelCopyWithImpl<$Res, LoginOtpModel>;
   @useResult
-  $Res call({bool status, String user_id, String message});
+  $Res call({bool success, String user_id, String message});
 }
 
 /// @nodoc
@@ -52,14 +52,14 @@ class _$LoginOtpModelCopyWithImpl<$Res, $Val extends LoginOtpModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
+    Object? success = null,
     Object? user_id = null,
     Object? message = null,
   }) {
     return _then(_value.copyWith(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      success: null == success
+          ? _value.success
+          : success // ignore: cast_nullable_to_non_nullable
               as bool,
       user_id: null == user_id
           ? _value.user_id
@@ -81,7 +81,7 @@ abstract class _$$LoginOtpModelImplCopyWith<$Res>
       __$$LoginOtpModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool status, String user_id, String message});
+  $Res call({bool success, String user_id, String message});
 }
 
 /// @nodoc
@@ -95,14 +95,14 @@ class __$$LoginOtpModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? status = null,
+    Object? success = null,
     Object? user_id = null,
     Object? message = null,
   }) {
     return _then(_$LoginOtpModelImpl(
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
+      success: null == success
+          ? _value.success
+          : success // ignore: cast_nullable_to_non_nullable
               as bool,
       user_id: null == user_id
           ? _value.user_id
@@ -120,14 +120,14 @@ class __$$LoginOtpModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$LoginOtpModelImpl implements _LoginOtpModel {
   const _$LoginOtpModelImpl(
-      {this.status = false, this.user_id = "", this.message = ""});
+      {this.success = false, this.user_id = "", this.message = ""});
 
   factory _$LoginOtpModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$LoginOtpModelImplFromJson(json);
 
   @override
   @JsonKey()
-  final bool status;
+  final bool success;
   @override
   @JsonKey()
   final String user_id;
@@ -137,7 +137,7 @@ class _$LoginOtpModelImpl implements _LoginOtpModel {
 
   @override
   String toString() {
-    return 'LoginOtpModel(status: $status, user_id: $user_id, message: $message)';
+    return 'LoginOtpModel(success: $success, user_id: $user_id, message: $message)';
   }
 
   @override
@@ -145,14 +145,14 @@ class _$LoginOtpModelImpl implements _LoginOtpModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoginOtpModelImpl &&
-            (identical(other.status, status) || other.status == status) &&
+            (identical(other.success, success) || other.success == success) &&
             (identical(other.user_id, user_id) || other.user_id == user_id) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, status, user_id, message);
+  int get hashCode => Object.hash(runtimeType, success, user_id, message);
 
   @JsonKey(ignore: true)
   @override
@@ -170,7 +170,7 @@ class _$LoginOtpModelImpl implements _LoginOtpModel {
 
 abstract class _LoginOtpModel implements LoginOtpModel {
   const factory _LoginOtpModel(
-      {final bool status,
+      {final bool success,
       final String user_id,
       final String message}) = _$LoginOtpModelImpl;
 
@@ -178,7 +178,7 @@ abstract class _LoginOtpModel implements LoginOtpModel {
       _$LoginOtpModelImpl.fromJson;
 
   @override
-  bool get status;
+  bool get success;
   @override
   String get user_id;
   @override

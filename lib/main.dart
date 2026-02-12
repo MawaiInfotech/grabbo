@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabbo/pages/login_page.dart';
 import 'package:grabbo/prefbox.dart';
 import 'package:grabbo/routes/app_routes.dart';
@@ -9,6 +10,9 @@ import 'package:grabbo/services/login_service.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:provider/provider.dart';
+
+import 'network/connectivity_cubit.dart';
+import 'network/no_internet_wrapper.dart';
 
 Future<void> main() async {
   // HttpOverrides.global = MyHttpOverrides();
@@ -33,7 +37,7 @@ Future<void> main() async {
     providers: [
       Provider<LoginService>(create: (_) => LoginService()),
       Provider<HomepageService>(create: (_) => HomepageService()),
-
+      BlocProvider(create: (_) => ConnectivityCubit()),
     ],
     child: const MyApp(),
   ));
@@ -51,6 +55,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: false
       ),
+      builder: (context, child) {
+        return NoInternetWrapper(child: child!);
+      },
       home: const LoginPage(),
     );
   }

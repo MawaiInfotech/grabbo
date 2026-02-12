@@ -97,7 +97,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 Center(
                   child: Pinput(
                     controller: _otpController,
-                    length: 4,
+                    length: 6,
                     defaultPinTheme: PinTheme(
                       width: 40,
                       height: 45,

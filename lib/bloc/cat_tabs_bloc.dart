@@ -9,10 +9,10 @@ class CatTabsBloc extends Cubit<CatTabsState>{
 
   final HomepageService homepageService;
 
-  Future<void> init()async {
+  Future<void> init(String parentId)async {
     emit(CatTabsState.loading(state.catTabsModel));
     try {
-      final tabsData = await homepageService.getTabsListData();
+      final tabsData = await homepageService.getTabsListData(parentId);
       emit(CatTabsState.content(tabsData));
     } on ApiError catch (error) {
       emit(CatTabsState.failed(state.catTabsModel, error.message));

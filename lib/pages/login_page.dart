@@ -71,18 +71,15 @@ class _LoginPageState extends State<LoginPage> {
                       ElevatedButton(
                           onPressed: (){
                             Navigator.pushNamed(context, AppRoutes.navigationPage);
-
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black.withOpacity(0.2),
                             elevation: 0,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                             minimumSize: const Size(60, 30),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
-
                           ),
                           child: const Text("Skip >",style: TextStyle(color: Colors.black))
                       )
@@ -117,7 +114,6 @@ class _LoginPageState extends State<LoginPage> {
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
                             value: selectedCode,
-
                             items: const [
                               DropdownMenuItem(
                                 value: "+91",
