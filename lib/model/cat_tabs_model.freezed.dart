@@ -20,12 +20,16 @@ CatTabsModel _$CatTabsModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CatTabsModel {
+  @JsonKey(name: "partner_id")
+  String get partnerId => throw _privateConstructorUsedError;
   @JsonKey(name: "category_code")
   String get code => throw _privateConstructorUsedError;
   @JsonKey(name: "category_name")
   String get name => throw _privateConstructorUsedError;
   @JsonKey(name: "category_icon")
   String get icon => throw _privateConstructorUsedError;
+  @JsonKey(name: "icon_path")
+  String get iconPath => throw _privateConstructorUsedError;
   @JsonKey(name: "level")
   int get level => throw _privateConstructorUsedError;
 
@@ -42,9 +46,11 @@ abstract class $CatTabsModelCopyWith<$Res> {
       _$CatTabsModelCopyWithImpl<$Res, CatTabsModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: "category_code") String code,
+      {@JsonKey(name: "partner_id") String partnerId,
+      @JsonKey(name: "category_code") String code,
       @JsonKey(name: "category_name") String name,
       @JsonKey(name: "category_icon") String icon,
+      @JsonKey(name: "icon_path") String iconPath,
       @JsonKey(name: "level") int level});
 }
 
@@ -61,12 +67,18 @@ class _$CatTabsModelCopyWithImpl<$Res, $Val extends CatTabsModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? partnerId = null,
     Object? code = null,
     Object? name = null,
     Object? icon = null,
+    Object? iconPath = null,
     Object? level = null,
   }) {
     return _then(_value.copyWith(
+      partnerId: null == partnerId
+          ? _value.partnerId
+          : partnerId // ignore: cast_nullable_to_non_nullable
+              as String,
       code: null == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
@@ -78,6 +90,10 @@ class _$CatTabsModelCopyWithImpl<$Res, $Val extends CatTabsModel>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
+              as String,
+      iconPath: null == iconPath
+          ? _value.iconPath
+          : iconPath // ignore: cast_nullable_to_non_nullable
               as String,
       level: null == level
           ? _value.level
@@ -96,9 +112,11 @@ abstract class _$$CatTabsModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: "category_code") String code,
+      {@JsonKey(name: "partner_id") String partnerId,
+      @JsonKey(name: "category_code") String code,
       @JsonKey(name: "category_name") String name,
       @JsonKey(name: "category_icon") String icon,
+      @JsonKey(name: "icon_path") String iconPath,
       @JsonKey(name: "level") int level});
 }
 
@@ -113,12 +131,18 @@ class __$$CatTabsModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? partnerId = null,
     Object? code = null,
     Object? name = null,
     Object? icon = null,
+    Object? iconPath = null,
     Object? level = null,
   }) {
     return _then(_$CatTabsModelImpl(
+      partnerId: null == partnerId
+          ? _value.partnerId
+          : partnerId // ignore: cast_nullable_to_non_nullable
+              as String,
       code: null == code
           ? _value.code
           : code // ignore: cast_nullable_to_non_nullable
@@ -130,6 +154,10 @@ class __$$CatTabsModelImplCopyWithImpl<$Res>
       icon: null == icon
           ? _value.icon
           : icon // ignore: cast_nullable_to_non_nullable
+              as String,
+      iconPath: null == iconPath
+          ? _value.iconPath
+          : iconPath // ignore: cast_nullable_to_non_nullable
               as String,
       level: null == level
           ? _value.level
@@ -143,14 +171,19 @@ class __$$CatTabsModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CatTabsModelImpl implements _CatTabsModel {
   const _$CatTabsModelImpl(
-      {@JsonKey(name: "category_code") this.code = "",
+      {@JsonKey(name: "partner_id") this.partnerId = "",
+      @JsonKey(name: "category_code") this.code = "",
       @JsonKey(name: "category_name") this.name = "",
       @JsonKey(name: "category_icon") this.icon = "",
+      @JsonKey(name: "icon_path") this.iconPath = "",
       @JsonKey(name: "level") this.level = 0});
 
   factory _$CatTabsModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$CatTabsModelImplFromJson(json);
 
+  @override
+  @JsonKey(name: "partner_id")
+  final String partnerId;
   @override
   @JsonKey(name: "category_code")
   final String code;
@@ -161,12 +194,15 @@ class _$CatTabsModelImpl implements _CatTabsModel {
   @JsonKey(name: "category_icon")
   final String icon;
   @override
+  @JsonKey(name: "icon_path")
+  final String iconPath;
+  @override
   @JsonKey(name: "level")
   final int level;
 
   @override
   String toString() {
-    return 'CatTabsModel(code: $code, name: $name, icon: $icon, level: $level)';
+    return 'CatTabsModel(partnerId: $partnerId, code: $code, name: $name, icon: $icon, iconPath: $iconPath, level: $level)';
   }
 
   @override
@@ -174,15 +210,20 @@ class _$CatTabsModelImpl implements _CatTabsModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CatTabsModelImpl &&
+            (identical(other.partnerId, partnerId) ||
+                other.partnerId == partnerId) &&
             (identical(other.code, code) || other.code == code) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.icon, icon) || other.icon == icon) &&
+            (identical(other.iconPath, iconPath) ||
+                other.iconPath == iconPath) &&
             (identical(other.level, level) || other.level == level));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, code, name, icon, level);
+  int get hashCode =>
+      Object.hash(runtimeType, partnerId, code, name, icon, iconPath, level);
 
   @JsonKey(ignore: true)
   @override
@@ -200,14 +241,19 @@ class _$CatTabsModelImpl implements _CatTabsModel {
 
 abstract class _CatTabsModel implements CatTabsModel {
   const factory _CatTabsModel(
-      {@JsonKey(name: "category_code") final String code,
+      {@JsonKey(name: "partner_id") final String partnerId,
+      @JsonKey(name: "category_code") final String code,
       @JsonKey(name: "category_name") final String name,
       @JsonKey(name: "category_icon") final String icon,
+      @JsonKey(name: "icon_path") final String iconPath,
       @JsonKey(name: "level") final int level}) = _$CatTabsModelImpl;
 
   factory _CatTabsModel.fromJson(Map<String, dynamic> json) =
       _$CatTabsModelImpl.fromJson;
 
+  @override
+  @JsonKey(name: "partner_id")
+  String get partnerId;
   @override
   @JsonKey(name: "category_code")
   String get code;
@@ -217,6 +263,9 @@ abstract class _CatTabsModel implements CatTabsModel {
   @override
   @JsonKey(name: "category_icon")
   String get icon;
+  @override
+  @JsonKey(name: "icon_path")
+  String get iconPath;
   @override
   @JsonKey(name: "level")
   int get level;

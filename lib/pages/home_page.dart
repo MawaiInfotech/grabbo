@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabbo/bloc/cat_tabs_bloc.dart';
 import 'package:grabbo/model/cat_tabs_model.dart';
+import 'package:grabbo/model/partner_list_model.dart';
 import 'package:grabbo/services/homepage_service.dart';
+import 'package:grabbo/state/partner_list_state.dart';
 import 'package:provider/provider.dart';
 
+import '../bloc/partner_list_bloc.dart';
 import '../routes/app_routes.dart';
 import '../state/cat_tabs_state.dart';
-import '../utils/category_icons.dart';
 import '../widgets/grocer_loader.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,46 +24,181 @@ class _HomePageState extends State<HomePage> {
 
   late HomepageService homepageService;
   late CatTabsBloc catTabsBloc;
+  late PartnerListBloc partnerListBloc;
+
   int selectedCategoryIndex = 0;
+
+  int selectedPartnerIndex = 0;
+
 
   @override
   void initState() {
     homepageService = Provider.of<HomepageService>(context, listen: false);
+    partnerListBloc = PartnerListBloc(homepageService);
+    partnerListBloc.init();
     catTabsBloc = CatTabsBloc(homepageService);
-    catTabsBloc.init();
+    catTabsBloc.init("1");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 7, // number of tabs
-      child: Scaffold(
-        body: _buildBody()
+    return Scaffold(
+      body: _buildTabBody(),
+    );
+  }
+
+
+  // BlocConsumer<PartnerListBloc, PartnerListState> _buildPartnerHeader() {
+  //   return BlocConsumer<PartnerListBloc, PartnerListState>(
+  //     bloc: partnerListBloc,
+  //     listener: (_, state) {},
+  //     builder: (_, state) {
+  //       return state.when(
+  //           loading: _buildLoading,
+  //           content: _buildContent,
+  //           success: _buildContent,
+  //           failed: (form, _) => _buildContent(form));
+  //     },
+  //   );
+  // }
+  //
+  // Widget _buildLoading(List<PartnerListModel> model) {
+  //   return Center(child: GroceryLoader.initial());
+  // }
+
+  Widget _buildPartnerContent(List<PartnerListModel> model) {
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        itemCount: model.length,
+        itemBuilder: (context, index) {
+
+          final item = model[index];
+          final bool isSelected = selectedPartnerIndex == index;
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedPartnerIndex = index;
+              });
+
+              catTabsBloc.init(item.partnerId.toString());
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 90,
+              margin: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              decoration: BoxDecoration(
+                gradient: isSelected
+                    ? (index == 0
+                    ? const LinearGradient(
+                  colors: [
+                    Color(0xFFF6CB46), // Yellow
+                    Color(0xFFFF9800), // Orange
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+                    : const LinearGradient(
+                  colors: [
+                    Color(0xFF478CFB), // Blue
+                    Color(0xFF1B5ED8),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ))
+                    : null,
+                color: isSelected ? null : Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: isSelected
+                    ? [
+                  BoxShadow(
+                    color: (index == 0
+                        ? Colors.orange
+                        : const Color(0xFF2874F0))
+                        .withOpacity(0.4),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+                    : [],
+                border: isSelected
+                    ? null
+                    : Border.all(color: Colors.grey.shade300),
+              ),
+
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                   //   color: isSelected ? Colors.white : Colors.transparent,
+                   //   shape: BoxShape.circle,
+                    ),
+                    child:Image.network(
+                      item.partnerLogo,
+                      height: 30,
+                      width: 30,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          "assets/images/sports.png",
+                          height: 30,
+                          width: 30,
+                          fit: BoxFit.contain,
+                        );
+                      },
+                    )
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    item.partnerName,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  _buildBody() {
+
+
+
+  BlocConsumer<CatTabsBloc, CatTabsState> _buildTabBody() {
     return BlocConsumer<CatTabsBloc, CatTabsState>(
       bloc: catTabsBloc,
       listener: (_, state) {},
       builder: (_, state) {
         return state.when(
-            loading: _buildLoading,
-            content: _buildContent,
-            success: _buildContent,
-            failed: (form, __) => _buildContent(form));
+            loading: _buildTabLoading,
+            content: _buildTabContent,
+            success: _buildTabContent,
+            failed: (form, _) => _buildTabContent(form));
       },
     );
   }
 
-  Widget _buildLoading(List<CatTabsModel> model) {
+  Widget _buildTabLoading(List<CatTabsModel> model) {
     return Center(child: GroceryLoader.initial());
   }
 
-  Widget _buildContent(List<CatTabsModel> model) {
-    print(model.length);
+  Widget _buildTabContent(List<CatTabsModel> model) {
+   // print(model.length);
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -76,179 +213,189 @@ class _HomePageState extends State<HomePage> {
       ),
       child: SafeArea(
         child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              // 🔹 Logo + Address
-              SliverToBoxAdapter(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.flash_on,
-                                  color: Colors.purple, size: 28),
-                              SizedBox(width: 6),
-                              Text(
-                                "Grabbo",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.purple,
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+
+                /// 🔥 PARTNER HEADER (NOW SCROLLS & HIDES)
+                SliverToBoxAdapter(
+                  child: BlocBuilder<PartnerListBloc, PartnerListState>(
+                    bloc: partnerListBloc,
+                    builder: (_, state) {
+                      return state.when(
+                        loading: (model) =>
+                        const SizedBox(height: 95, child: Center(child: CircularProgressIndicator())),
+                        content: _buildPartnerContent,
+                        success: _buildPartnerContent,
+                        failed: (model, _) => _buildPartnerContent(model),
+                      );
+                    },
+                  ),
+                ),
+
+                /// 🔹 Logo + Address
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Row(
+                        //       children: [
+                        //         Icon(Icons.flash_on, color: Colors.purple, size: 28),
+                        //         SizedBox(width: 6),
+                        //         Text(
+                        //           "Grabbo",
+                        //           style: TextStyle(
+                        //             fontSize: 20,
+                        //             fontWeight: FontWeight.w900,
+                        //             color: Colors.purple,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //     CircleAvatar(
+                        //       radius: 18,
+                        //       backgroundColor: Colors.white,
+                        //       child: Icon(Icons.person, color: Colors.black),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(height: 6),
+                        Row(
+                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all( 7),
+                                color: Colors.white.withOpacity(0.4),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.location_on_outlined),
+                                    SizedBox(width: 4),
+                                    Text("A Block, Sector 63, Noida"),
+                                    Icon(Icons.arrow_drop_down),
+                                  ],
                                 ),
                               ),
+                            ),
+                            SizedBox(width: 10),
+
+                            const CircleAvatar(
+                              radius: 18,
+                              backgroundColor: Colors.white,
+                              child: Icon(Icons.person, color: Colors.black),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                /// 🔒 Search + Category stays pinned
+                SliverAppBar(
+                  pinned: true,
+                  elevation: 2,
+                  backgroundColor: const Color(0xfffdefc6),
+                  automaticallyImplyLeading: false,
+                  toolbarHeight: 130,
+                  flexibleSpace: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              )
                             ],
                           ),
-                          CircleAvatar(
-                            radius: 18,
-                            backgroundColor: Colors.white,
-                            child: Icon(Icons.person, color: Colors.black),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.search, color: Colors.black54),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    hintText: 'Search "20000 mah powerbank..."',
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              Icon(Icons.mic, color: Colors.black54),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                      SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Icon(Icons.location_on_outlined),
-                          SizedBox(width: 4),
-                          Text("A Block, Sector 63, Noida"),
-                          Icon(Icons.arrow_drop_down),
-                        ],
+
+                      /// Category Buttons
+                      SizedBox(
+                        height: 60,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          itemCount: model.length,
+                          itemBuilder: (context, index) {
+                            final item = model[index];
+                            final isSelected = selectedCategoryIndex == index;
+
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedCategoryIndex = index;
+                                });
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: isSelected ? Colors.white : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: isSelected
+                                      ? const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    )
+                                  ]
+                                      : [],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.network(item.icon, width: 25, height: 25),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      item.name,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight:
+                                        isSelected ? FontWeight.w600 : FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
+              ];
+            },
 
-              // 🔹 Search + Category Buttons
-              SliverAppBar(
-                pinned: true,
-                elevation: 2,
-                backgroundColor: const Color(0xfffdefc6),
-                automaticallyImplyLeading: false,
-                toolbarHeight: 130,
-
-                flexibleSpace: Column(
-                  children: [
-                    // 🔍 Search Bar
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            )
-                          ],
-                        ),
-                        child: const Row(
-                          children: [
-                            Icon(Icons.search, color: Colors.black54),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText:
-                                  'Search "20000 mah powerbank..."',
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                            Icon(Icons.mic, color: Colors.black54),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // 🔘 CATEGORY BUTTONS (API DRIVEN)
-                    SizedBox(
-                      height: 60,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 12),
-                        itemCount: model.length,
-                        itemBuilder: (context, index) {
-
-                          final item = model[index];
-                          final isSelected =
-                              selectedCategoryIndex == index;
-
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedCategoryIndex = index;
-                              });
-
-                              // 🔥 Reload data here
-                              // catTabsBloc.loadCategory(
-                              //   item.categoryName,
-                              // );
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 12),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Colors.white
-                                    : Colors.transparent,
-                                borderRadius:
-                                BorderRadius.circular(10),
-                                boxShadow: isSelected
-                                    ? const [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  )
-                                ]
-                                    : [],
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: [
-                                  Image.asset(
-                                    CategoryIcons.getIcon(item.name),
-                                    width: 25,
-                                    height: 25,
-                                  )
-                                  ,
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    item.name,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: isSelected
-                                          ? FontWeight.w600
-                                          : FontWeight.w400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ];
-          },
-
-          // 🔻 BODY RELOADS BASED ON CATEGORY
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,7 +479,8 @@ class _HomePageState extends State<HomePage> {
                         "assets/images/bun.jpg",
                         "assets/images/milk.webp",
                         "assets/images/protien.png",
-                      ], "+33 more"),
+                      ], "+33 more"
+                      ),
                       _gridCategory(
                           "Oil, Ghee & Masala", [
                         "assets/images/oil.jpg",
@@ -422,7 +570,7 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  _circleCategory(String title, String imagePath) {
+  Container _circleCategory(String title, String imagePath) {
     return Container(
       margin: const EdgeInsets.only(right: 14),
       child: Column(
@@ -439,7 +587,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _categoryTile(String title, String imagePath) {
+  Column _categoryTile(String title, String imagePath) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -465,7 +613,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _gridCategory(String title, List<String> imagePaths, String more) {
+  Container _gridCategory(String title, List<String> imagePaths, String more) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
